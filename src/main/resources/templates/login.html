@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | AnnoncesPro</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --blue-light: #eff6ff;
+            --dark: #0f172a;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #ffffff, #f0f7ff);
+            min-height: 100vh;
+        }
+
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* LEFT SIDE */
+        .left-side {
+            flex: 1.1;
+            background: linear-gradient(135deg, rgba(37,99,235,0.9), rgba(15,23,42,0.9)),
+                        url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1600');
+            background-size: cover;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+
+        .left-content h1 {
+            font-weight: 800;
+            font-size: 2.8rem;
+        }
+
+        .left-content p {
+            opacity: 0.9;
+        }
+
+        /* RIGHT SIDE */
+        .right-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        /* LOGO */
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--blue), #60a5fa);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            color: white;
+            font-size: 1.6rem;
+            box-shadow: 0 10px 25px rgba(37,99,235,0.3);
+        }
+
+        .logo span {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        /* CARD */
+        .card-login {
+            width: 100%;
+            max-width: 420px;
+            padding: 35px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        }
+
+        .card-login h2 {
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .card-login p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        /* INPUT */
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group-custom i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-weight: 500;
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--blue);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* BUTTON */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--blue), #3b82f6);
+            color: white;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37,99,235,0.2);
+        }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+
+        .footer-link a {
+            color: var(--blue);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        @media(max-width: 992px){
+            .left-side{
+                display:none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-container">
+
+    <!-- LEFT -->
+    <div class="left-side animate__animated animate__fadeIn">
+        <div class="left-content text-center">
+            <h1>Gérez vos annonces<br>comme un pro</h1>
+            <p>Immobilier, services, voitures et plus encore</p>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-side">
+
+        <div class="card-login animate__animated animate__fadeInUp">
+
+            <!-- LOGO -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <span>ANNONCES<span style="color:#2563eb;">PRO</span></span>
+            </div>
+
+            <h2>Connexion</h2>
+            <p>Accédez à votre espace professionnel</p>
+
+            <form th:action="@{/login}" method="POST">
+
+                <div class="input-group-custom">
+                    <input type="email" name="email" class="form-control-custom" placeholder="Email" required>
+                    <i class="far fa-envelope"></i>
+                </div>
+
+                <div class="input-group-custom">
+                    <input type="password" name="password" class="form-control-custom" placeholder="Mot de passe" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+
+                <button class="btn-login">
+                    Se connecter <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </form>
+
+            <div class="footer-link">
+                Nouveau ? <a th:href="@{/register}">Créer un compte</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

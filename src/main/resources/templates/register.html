@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription | AnnoncesPro Prestige</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- DESSIN DU LOGO EN CSS --- */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .css-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 18px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            transform: rotate(-10deg);
+            transition: 0.3s;
+        }
+
+        .css-logo::before {
+            content: '';
+            width: 25px;
+            height: 25px;
+            border: 4px solid white;
+            border-bottom: none;
+            border-right: none;
+            position: absolute;
+            top: 12px; left: 12px;
+        }
+
+        .css-logo::after {
+            content: '';
+            width: 15px;
+            height: 15px;
+            background: var(--success);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 12px; right: 12px;
+        }
+
+        .logo-container:hover .css-logo {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .brand-name-css {
+            margin-top: 15px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+            color: #0f172a;
+        }
+
+        /* --- BACKGROUND DÉCORATIF --- */
+        .bg-blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        /* --- CARTE D'INSCRIPTION --- */
+        .register-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+        }
+
+        .modern-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 35px;
+            width: 100%;
+            max-width: 650px;
+            padding: 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-text h2 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: #0f172a;
+            letter-spacing: -1px;
+        }
+
+        /* --- STYLISATION DES INPUTS --- */
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-left: 5px;
+        }
+
+        .input-group-modern {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group-modern i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .modern-control {
+            width: 100%;
+            padding: 16px 20px 16px 55px;
+            border-radius: 20px;
+            border: 2px solid #f1f5f9;
+            background: #ffffff;
+            font-weight: 600;
+            color: #1e293b;
+            transition: 0.3s;
+        }
+
+        .modern-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.05);
+        }
+
+        .modern-control:focus + i {
+            color: var(--primary);
+        }
+
+        /* --- BOUTON MAGIQUE --- */
+        .btn-register-premium {
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px;
+            width: 100%;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: 0.4s;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn-register-premium:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 50px 0;
+            border-radius: 50px 50px 0 0;
+            text-align: center;
+        }
+
+        footer a { color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 768px) {
+            .modern-card { padding: 30px 20px; border-radius: 25px; }
+            .welcome-text h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob" style="top: -100px; left: -100px;"></div>
+    <div class="bg-blob" style="bottom: 100px; right: -100px; background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%);"></div>
+
+    <div class="register-wrapper">
+        <div class="modern-card animate__animated animate__fadeInUp">
+            
+            <div class="logo-container">
+                <div class="css-logo"></div>
+                <div class="brand-name-css">ANNONCES<span style="opacity: 0.4">PRO</span></div>
+            </div>
+
+            <div class="welcome-text text-center mb-5">
+                <h2>Créer un compte</h2>
+                <p class="text-muted">L'excellence commence par une simple inscription.</p>
+            </div>
+
+            <form th:action="@{/register}" th:object="${utilisateur}" method="POST">
+                <div th:if="${error}" class="alert alert-danger border-0 rounded-4 mb-4" th:text="${error}"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group-modern">
+                            <label class="form-label">Nom</label>
+                            <input type="text" th:field="*{nom}" class="modern-control" placeholder="Ex: Alami" required>
+                            <i class="far fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group-modern">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" th:field="*{prenom}" class="modern-control" placeholder="Ex: Ahmed" required>
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group-modern">
+                    <label class="form-label">Adresse Email Professionnelle</label>
+                    <input type="email" th:field="*{email}" class="modern-control" placeholder="votre@email.com" required>
+                    <i class="far fa-envelope"></i>
+                </div>
+
+                <div class="input-group-modern">
+                    <label class="form-label">Ville de résidence</label>
+                    <input type="text" th:field="*{ville}" class="modern-control" placeholder="Ex: Casablanca" required>
+                    <i class="fas fa-location-dot"></i>
+                </div>
+
+                <div class="input-group-modern">
+                    <label class="form-label">Mot de passe sécurisé</label>
+                    <input type="password" th:field="*{password}" class="modern-control" placeholder="••••••••••••" required>
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+
+                <div class="form-check mb-4 mt-2">
+                    <input type="checkbox" class="form-check-input" id="terms" required style="width: 20px; height: 20px;">
+                    <label class="form-check-label ms-2 text-muted fw-500" for="terms">
+                        J'accepte les <a href="#" class="text-primary fw-bold text-decoration-none">Conditions d'Utilisation</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-register-premium animate__animated animate__pulse animate__infinite animate__slow">
+                    REJOINDRE LA COMMUNAUTÉ <i class="fas fa-chevron-right ms-2"></i>
+                </button>
+            </form>
+
+            <div class="text-center mt-5">
+                <p class="text-muted fw-600">Déjà parmi nous ? <a th:href="@{/login}" class="text-primary fw-800 text-decoration-none ms-2">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <a href="#" class="mx-3">Accueil</a>
+                        <a href="#" class="mx-3">Support</a>
+                        <a href="#" class="mx-3">Confidentialité</a>
+                    </div>
+                    <p class="opacity-50 small">&copy; 2026 AnnoncesPro Excellence. All rights reserved.</p>
+                    <small style="color: var(--success)">Propulsé par le système de modération de Hajar.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

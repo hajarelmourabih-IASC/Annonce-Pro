@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnnoncesPro | L'excellence des petites annonces</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary: #2563eb; 
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            --secondary: #f8fafc; 
+            --dark: #0f172a; 
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--secondary); 
+            color: var(--dark); 
+            overflow-x: hidden; 
+        }
+
+        /* --- SLIDESHOW HAUT DE GAMME --- */
+        #bg-slideshow { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; overflow: hidden; }
+        .slide { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            background-size: cover; 
+            background-position: center; 
+            opacity: 0; 
+            transform: scale(1.1);
+            transition: opacity 1.2s ease-in-out, transform 4s ease-out; 
+        }
+        .slide.active { 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        .overlay { 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.8)); 
+            z-index: 0; 
+        }
+
+        /* --- NAVBAR FLOTTANTE --- */
+        .navbar { 
+            z-index: 10; 
+            background: rgba(255, 255, 255, 0.8) !important; 
+            backdrop-filter: blur(15px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
+        .logo-icon { 
+            background: var(--primary-gradient); 
+            color: white; width: 38px; height: 38px; 
+            border-radius: 12px; display: flex; align-items: center; 
+            justify-content: center; margin-right: 10px; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-section { 
+            height: 80vh; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            position: relative; z-index: 1; 
+            color: white; text-align: center; 
+        }
+        .hero-section h1 {
+            font-weight: 800;
+            letter-spacing: -2px;
+            font-size: 3.5rem;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Barre de recherche Glassmorphism */
+        .search-bar-hero { 
+            background: var(--glass); 
+            backdrop-filter: blur(10px);
+            border-radius: 24px; 
+            padding: 10px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25); 
+            width: 100%; max-width: 750px; 
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: transform 0.3s ease;
+        }
+        .search-bar-hero:focus-within {
+            transform: translateY(-5px);
+        }
+        .search-bar-hero input {
+            background: transparent;
+            border: none;
+            font-weight: 500;
+        }
+        .search-bar-hero input:focus {
+            box-shadow: none;
+            background: transparent;
+        }
+        .search-bar-hero .btn {
+            border-radius: 16px;
+            padding: 12px 35px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- CATÉGORIES --- */
+        .category-item { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 25px 15px; 
+            text-align: center; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1px solid #f1f5f9; 
+            text-decoration: none; color: inherit; 
+            display: block; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .category-item:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+            border-color: var(--primary); 
+        }
+        .category-icon { 
+            font-size: 2.2rem; 
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 16px;
+            margin: 0 auto 15px;
+            color: var(--primary); 
+            transition: 0.3s;
+        }
+        .category-item:hover .category-icon {
+            background: var(--primary-gradient);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* --- CARTES D'ANNONCES ÉLÉGANTES --- */
+        .card-annonce { 
+            border: none; 
+            border-radius: 24px; 
+            overflow: hidden; 
+            background: white; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            height: 100%; 
+            text-decoration: none; color: inherit; 
+            display: block; position: relative; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .card-annonce:hover { 
+            transform: translateY(-12px); 
+            box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.1); 
+        }
+        .card-img-container { height: 220px; overflow: hidden; position: relative; }
+        .card-img-top { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .card-annonce:hover .card-img-top { transform: scale(1.08); }
+        .price-tag { 
+            color: var(--primary); 
+            font-weight: 800; 
+            font-size: 1.3rem; 
+            letter-spacing: -0.5px;
+        }
+        
+        /* Actions Utilisateur subtiles */
+        .user-actions {
+            position: absolute; top: 15px; right: 15px; z-index: 10;
+            display: flex; gap: 8px;
+        }
+        .btn-action {
+            width: 36px; height: 36px; border-radius: 12px; border: none;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem; transition: 0.3s; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+        .btn-edit { background: rgba(79, 70, 229, 0.9); }
+        .btn-delete { background: rgba(239, 68, 68, 0.9); }
+        .btn-action:hover { transform: scale(1.15) rotate(5deg); color: white; }
+
+        /* Badge Catégorie sur image */
+        .cat-badge {
+            position: absolute;
+            bottom: 15px; left: 15px;
+            background: rgba(15, 23, 42, 0.7);
+            color: white; backdrop-filter: blur(5px);
+            padding: 5px 12px; border-radius: 10px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+
+        /* --- FOOTER --- */
+        footer { 
+            background: var(--dark); 
+            color: white; 
+            padding: 50px 0; 
+            position: relative; z-index: 1; 
+            text-align: center; 
+            border-radius: 60px 60px 0 0; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-slideshow">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1920');"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1920');"></div>
+        <div class="overlay"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-primary d-flex align-items-center" th:href="@{/}">
+                <div class="logo-icon"><i class="fas fa-bullhorn"></i></div>
+                <span>ANNONCES<span class="text-dark">PRO</span></span>
+            </a>
+            
+            <div class="ms-auto d-flex align-items-center">
+                <div th:if="${session.userConnecte != null}" class="dropdown me-3">
+                    <a class="btn btn-light dropdown-toggle d-flex align-items-center rounded-pill px-3 border" href="#" role="button" data-bs-toggle="dropdown">
+                        <img th:if="${session.userConnecte.photoProfil != null}" 
+                             th:src="@{'/uploads/' + ${session.userConnecte.photoProfil}}" 
+                             class="rounded-circle me-2" 
+                             style="width: 26px; height: 26px; object-fit: cover;">
+                        <i th:unless="${session.userConnecte.photoProfil != null}" class="fas fa-user-circle me-2 text-primary"></i>
+                        <span class="fw-600" th:text="${session.userConnecte.nom}">Compte</span>
+                    </a>
+                  <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="border-radius: 16px;">
+                    <li th:if="${session.userConnecte.email == 'hajar@gmail.com'}">
+                        <a class="dropdown-item fw-bold text-primary" th:href="@{/admin-dashboard}">
+                            <i class="fas fa-user-shield me-2"></i> Administration
+                        </a>
+                    </li>
+                    <li th:if="${session.userConnecte.email == 'hajar@gmail.com'}"><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" th:href="@{/mon-profil}"><i class="fas fa-user me-2"></i> Mon Profil</a></li>
+                    <li><a class="dropdown-item" th:href="@{/mon-profil#tab-annonces}"><i class="fas fa-list me-2"></i> Mes Annonces</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger fw-600" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i> Déconnexion</a></li>
+                  </ul>
+                </div>
+
+              <div th:if="${session.userConnecte != null}" class="me-3 position-relative">
+    <a th:href="@{/cercle}" class="btn btn-outline-primary rounded-pill px-3 fw-600">
+        <i class="fas fa-users-rays me-1"></i>
+        <span class="d-none d-md-inline">Le Cercle</span>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style="font-size: 0.5rem; padding: 0.35em 0.5em;">
+            LIVE
+        </span>
+    </a>
+</div>
+ 
+                <a th:if="${session.userConnecte == null}" th:href="@{/login}" class="btn btn-outline-primary me-2 rounded-pill px-4 fw-600">Connexion</a>
+                
+                <a th:href="@{/contact}" class="btn btn-link text-decoration-none text-dark me-2 fw-600 d-none d-md-inline-block">
+                    <i class="fas fa-headset me-1 text-primary"></i> Support
+                </a>
+                
+                <a th:href="${session.userConnecte != null ? '/annonce/nouveau' : '/login'}" class="btn btn-primary px-4 rounded-pill shadow fw-700">
+                    <i class="fas fa-plus-circle me-1"></i> Publier
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section container">
+        <div class="mb-5 px-3">
+            <h1 class="display-3 mb-3 text-white">Trouvez la perle rare.</h1>
+            <p class="fs-4 opacity-90 text-white fw-300">Le premier réseau d'annonces premium au Maroc.</p>
+        </div>
+        
+        <div class="search-bar-hero mx-auto">
+            <form class="input-group" th:action="@{/}" method="get">
+                <span class="input-group-text border-0 bg-transparent text-muted ps-4">
+                    <i class="fas fa-search fs-5"></i>
+                </span>
+                <input type="text" name="keyword" th:value="${keyword}" class="form-control px-2 fs-5" placeholder="Que recherchez-vous aujourd'hui ?">
+                <button class="btn btn-primary" type="submit">Rechercher</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="bg-white py-5" style="position: relative; z-index: 1; border-radius: 60px 60px 0 0; margin-top: -30px;">
+        <div class="container">
+            
+            <div class="mb-5">
+                <h4 class="fw-800 mb-4 text-start letter-spacing">Explorez par catégorie</h4>
+                <div class="row g-4 text-center">
+                    <div class="col-6 col-md-2" th:each="cat : ${ {'Auto', 'Immo', 'Tech', 'Mode', 'Maison', 'Emploi'} }">
+                        <a th:href="@{/(cat=${cat})}" class="category-item">
+                            <div class="category-icon">
+                                <i th:class="${cat == 'Auto' ? 'fas fa-car' : cat == 'Immo' ? 'fas fa-home' : cat == 'Tech' ? 'fas fa-mobile-alt' : cat == 'Mode' ? 'fas fa-tshirt' : cat == 'Maison' ? 'fas fa-couch' : 'fas fa-briefcase'}"></i>
+                            </div>
+                            <p class="mb-0 fw-700 small" th:text="${cat}"></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5 opacity-50">
+
+            <h2 class="fw-800 mb-4" th:text="${keyword != null && !keyword.isEmpty()} ? '🔍 Résultats pour : ' + ${keyword} : '✨ Dernières pépites'">Dernières annonces</h2>
+
+            <div class="row g-4" th:if="${!annonces.empty}">
+                <div class="col-md-3" th:each="annonce : ${annonces}">
+                    <div class="card card-annonce">
+                        
+                        <div th:if="${session.userConnecte != null and annonce.utilisateur != null and session.userConnecte.id == annonce.utilisateur.id}" class="user-actions">
+                            <a th:href="@{'/annonce/modifier/' + ${annonce.id}}" class="btn-action btn-edit" title="Modifier">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <a th:href="@{'/annonce/supprimer/' + ${annonce.id}}" class="btn-action btn-delete" 
+                               onclick="return confirm('Voulez-vous vraiment supprimer cette annonce ?')" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+
+                        <a th:href="@{'/annonce/' + ${annonce.id}}" class="text-decoration-none text-dark">
+                            <div class="card-img-container">
+                                <img th:src="@{'/uploads/' + ${annonce.imageNom}}" class="card-img-top" th:alt="${annonce.titre}">
+                                <span class="cat-badge" th:text="${annonce.categorie}">Catégorie</span>
+                            </div>
+                            <div class="card-body p-4">
+                                <h6 class="fw-700 text-truncate mb-2" th:text="${annonce.titre}">Titre</h6>
+                                <p class="text-muted small mb-3">
+                                    <i class="fas fa-map-marker-alt me-1 text-primary"></i> 
+                                    <span th:text="${annonce.ville}">Ville</span>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="price-tag"><span th:text="${annonce.prix}">0</span> DH</div>
+                                    <span class="btn btn-light btn-sm rounded-circle" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-chevron-right text-primary small"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center py-5 my-5" th:if="${annonces.empty}">
+                <i class="fas fa-box-open fa-4x text-muted opacity-50 mb-3"></i>
+                <h4 class="fw-bold text-muted">Aucune annonce trouvée</h4>
+                <p class="text-muted">Soyez le premier à publier dans cette catégorie !</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <h5 class="fw-800 mb-3">ANNONCES<span class="text-primary">PRO</span></h5>
+            <p class="mb-1 opacity-75">&copy; 2026 Tous droits réservés.</p>
+            <small class="opacity-50">Conçu avec passion pour une expérience utilisateur moderne.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        
+        function showNextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        
+        // Change d'image toutes les 4 secondes pour laisser le temps au zoom de s'apprécier
+        setInterval(showNextSlide, 4000);
+    </script>
+</body>
+</html>

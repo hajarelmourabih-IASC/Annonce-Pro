@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${annonce.titre} + ' | Annonces Pro'"></title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --primary-color: #2563eb; --bg-body: #f1f5f9; --whatsapp-green: #25d366; --verified: #0095f6; }
+        body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: #1e293b; }
+        .navbar { background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; }
+        
+        .product-gallery { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
+        
+        .img-main-wrapper { 
+            width: 100%; height: 500px; 
+            display: flex; align-items: center; justify-content: center; 
+            background: #f8fafc; overflow: hidden;
+        }
+        .img-main-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .img-main-wrapper:hover img { transform: scale(1.05); }
+
+        .info-card { background: white; border-radius: 24px; padding: 32px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .price-text { font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+        
+        .seller-sidebar { position: sticky; top: 100px; }
+        
+        /* Avatar & Badge */
+        .avatar-circle {
+            width: 50px; height: 50px; border-radius: 15px;
+            object-fit: cover; background: var(--primary-color);
+            color: white; display: flex; align-items: center;
+            justify-content: center; font-weight: 800; font-size: 1.2rem;
+        }
+        .badge-verified { color: var(--verified); font-size: 1.1rem; }
+        
+        /* Boutons Professionnels */
+        .btn-contact { padding: 16px; border-radius: 16px; font-weight: 700; transition: all 0.3s; width: 100%; border: none; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        .btn-call { background: var(--primary-color); color: white; }
+        .btn-call:hover { background: #1d4ed8; transform: translateY(-2px); color: white; }
+        .btn-whatsapp { background: var(--whatsapp-green); color: white; }
+        .btn-whatsapp:hover { background: #128c7e; transform: translateY(-2px); color: white; }
+
+        .badge-cat { background: #dbeafe; color: #1e40af; font-weight: 700; padding: 6px 16px; border-radius: 100px; text-transform: uppercase; font-size: 0.75rem; }
+        .vendeur-link { text-decoration: none; color: inherit; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top mb-5">
+        <div class="container">
+            <a class="navbar-brand fw-800 text-primary fs-4" th:href="@{/}">
+                <i class="fas fa-rocket me-2"></i>ANNONCES<span class="text-dark">PRO</span>
+            </a>
+            <a th:href="@{/}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="fas fa-chevron-left me-1"></i> Retour
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="product-gallery mb-4">
+                    <div class="img-main-wrapper">
+                        <img th:src="${annonce.imageNom != null} ? @{'/uploads/' + ${annonce.imageNom}} : 'https://placehold.co/800x600?text=Image+Indisponible'" alt="Photo">
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="mb-3"><span class="badge-cat" th:text="${annonce.categorie}">Catégorie</span></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h1 class="fw-800 mb-3" th:text="${annonce.titre}">Titre</h1>
+                        <button class="btn btn-outline-primary rounded-circle" onclick="shareAnnonce()" title="Partager l'annonce">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="d-flex gap-4 text-muted mb-4 pb-4 border-bottom">
+                        <span><i class="fas fa-map-marker-alt text-danger me-2"></i><span th:text="${annonce.ville}">Ville</span></span>
+                        <span><i class="far fa-calendar-alt me-2"></i>Publiée aujourd'hui</span>
+                    </div>
+                    <h5 class="fw-700 mb-3">Description</h5>
+                    <p th:text="${annonce.description}" style="white-space: pre-wrap; color: #475569; line-height: 1.7;">Détails...</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="seller-sidebar">
+                    <div class="info-card shadow-lg mb-4" style="border-top: 5px solid var(--primary-color);">
+                        <div class="price-text mb-4">
+                            <span th:text="${annonce.prix}">0</span> <small class="fs-4">DH</small>
+                        </div>
+                        
+                        <a th:href="@{'/profil/' + ${annonce.utilisateur.id}}" class="vendeur-link">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-4 mb-4 border border-white hover-shadow">
+                                <img th:if="${annonce.utilisateur.photoProfil != null}" 
+                                     th:src="@{'/uploads/' + ${annonce.utilisateur.photoProfil}}" 
+                                     class="avatar-circle me-3">
+                                <div th:unless="${annonce.utilisateur.photoProfil != null}" 
+                                     class="avatar-circle me-3" 
+                                     th:text="${annonce.utilisateur.nom.substring(0,1).toUpperCase()}">U</div>
+                                
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-700">
+                                        <span th:text="${annonce.utilisateur.nom}">Vendeur</span>
+                                        <i th:if="${annonce.utilisateur.score >= 8.0}" 
+                                           class="fas fa-check-circle badge-verified ms-1" 
+                                           title="Profil Vérifié"></i>
+                                    </h6>
+                                    <small class="text-primary fw-bold">Voir toutes ses annonces <i class="fas fa-chevron-right ms-1" style="font-size: 0.7rem;"></i></small>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div id="contactSection">
+                            <button class="btn-contact btn-call" id="btnPhone" th:data-id="${annonce.id}" onclick="handleContact(this, 'call')">
+                                <i class="fas fa-phone-alt"></i> <span id="phoneLabel">Afficher le numéro</span>
+                            </button>
+
+                            <button class="btn-contact btn-whatsapp" id="btnWhatsappAction" th:data-id="${annonce.id}" onclick="handleContact(this, 'whatsapp')">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 rounded-4 bg-dark text-white p-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-shield-alt text-warning me-2 fs-4"></i>
+                            <h6 class="fw-700 mb-0">Achat sécurisé</h6>
+                        </div>
+                        <p class="small opacity-75 mb-0">Ce vendeur a un score de confiance de <strong th:text="${annonce.utilisateur.score} + '/10'">10/10</strong>. Privilégiez les remises en main propre.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function shareAnnonce() {
+            if (navigator.share) {
+                navigator.share({
+                    title: [[${annonce.titre}]],
+                    text: 'Regarde cette annonce sur AnnoncesPro !',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Lien copié !");
+            }
+        }
+
+        function handleContact(btn, type) {
+            const id = btn.getAttribute('data-id');
+            const titre = [[${annonce.titre}]];
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+            fetch('/annonce/telephone/' + id)
+                .then(res => res.text())
+                .then(num => {
+                    if (num && num !== "Indisponible") {
+                        let cleanNum = num.replace(/\s+/g, '');
+                        if(cleanNum.startsWith('0')) cleanNum = '212' + cleanNum.substring(1);
+
+                        if (type === 'whatsapp') {
+                            window.open(`https://wa.me/${cleanNum}?text=Bonjour, je suis intéressé par votre annonce : ${titre}`, '_blank');
+                            btn.innerHTML = originalContent;
+                        } else {
+                            btn.innerHTML = `<i class="fas fa-phone-alt"></i> ${num}`;
+                            btn.classList.replace('btn-call', 'btn-success');
+                        }
+                    } else {
+                        btn.innerHTML = "Non disponible";
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

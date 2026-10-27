@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Profil de ' + ${vendeur.nom} + ' | AnnoncesPro'"></title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #2563eb; --whatsapp: #25d366; --bg: #f8fafc; }
+        body { background-color: var(--bg); font-family: 'Inter', sans-serif; color: #1e293b; }
+        
+        .profile-header { background: white; border-bottom: 1px solid #e2e8f0; padding: 60px 0 30px; margin-bottom: 40px; }
+        
+        .avatar-large {
+            width: 100px; height: 100px; background: var(--primary); color: white;
+            font-size: 2.5rem; font-weight: 800; display: flex; align-items: center; 
+            justify-content: center; border-radius: 30px; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .annonce-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            transition: all 0.3s ease; border: 1px solid #e2e8f0; height: 100%;
+        }
+        .annonce-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+        
+        .card-img-container { width: 100%; height: 200px; overflow: hidden; background: #f1f5f9; position: relative; }
+        .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn-whatsapp-profile {
+            background: var(--whatsapp); color: white; border-radius: 12px; 
+            padding: 12px 25px; font-weight: 700; border: none; transition: 0.3s;
+            text-decoration: none; display: inline-flex; align-items: center;
+        }
+        .btn-whatsapp-profile:hover { background: #128c7e; color: white; transform: scale(1.05); }
+        
+        .stat-badge { background: #eff6ff; color: var(--primary); padding: 8px 16px; border-radius: 100px; font-weight: 600; font-size: 0.9rem; }
+
+        footer {
+            background: #1e293b; 
+            color: white;
+            padding: 60px 0 40px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            border-radius: 50px 50px 0 0; 
+            margin-top: 80px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+
+        footer .container { max-width: 800px; }
+
+        footer a.text-white {
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        footer a.text-white:hover {
+            opacity: 1;
+            color: #009ef7 !important;
+        }
+
+        footer .mb-3 a:not(:last-child):after {
+            content: "|";
+            margin-left: 15px;
+            color: rgba(255,255,255,0.2);
+            pointer-events: none;
+        }
+
+        footer p { font-size: 1rem; letter-spacing: 0.5px; }
+        footer small { display: block; margin-top: 10px; font-style: italic; color: #a2a3b7; }
+
+        @media (max-width: 768px) {
+            footer { border-radius: 30px 30px 0 0; padding: 40px 0 30px; }
+            footer .mb-3 a:after { display: none; }
+            footer a { display: block; margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-800 text-primary" th:href="@{/}"><i class="fas fa-rocket me-2"></i>ANNONCESPRO</a>
+            <a th:href="@{/}" class="btn btn-light rounded-pill px-4">Retour à l'accueil</a>
+        </div>
+    </nav>
+
+    <div class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-auto mb-3 mb-md-0">
+                    <div class="avatar-large" th:text="${vendeur.nom != null ? vendeur.nom.substring(0,1).toUpperCase() : 'U'}">U</div>
+                </div>
+                <div class="col-md">
+                    <h1 class="fw-800 mb-1" th:text="${vendeur.nom}">Vendeur</h1>
+                    <p class="text-muted mb-3"><i class="far fa-calendar-alt me-2"></i>Membre actif en 2026</p>
+                    <div class="d-flex gap-3">
+                        <span class="stat-badge">
+                            <i class="fas fa-layer-group me-2"></i><span th:text="${annonces.size()}">0</span> Annonces
+                        </span>
+                        <span class="stat-badge text-success" style="background: #f0fdf4;">
+                            <i class="fas fa-check-circle me-2"></i>Profil Vérifié
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="col-md-auto mt-4 mt-md-0">
+                    <a th:if="${vendeur.telephone != null and vendeur.telephone.length() > 1}"
+                       th:with="telFinal=${vendeur.telephone.startsWith('0') ? '212' + vendeur.telephone.substring(1) : vendeur.telephone}"
+                       th:href="'https://wa.me/' + ${telFinal} + '?text=Bonjour ' + ${vendeur.nom}" 
+                       target="_blank" class="btn btn-whatsapp-profile">
+                        <i class="fab fa-whatsapp me-2 fs-5"></i> Contacter sur WhatsApp
+                    </a>
+                    
+                    <span th:unless="${vendeur.telephone != null and vendeur.telephone.length() > 1}" class="text-muted small">
+                        <i class="fas fa-phone-slash me-1"></i> Aucun contact fourni
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <h3 class="fw-700 mb-4">Annonces de ce vendeur</h3>
+        <div class="row g-4">
+            <div class="col-md-4 col-lg-3" th:each="ann : ${annonces}">
+                <div class="annonce-card">
+                    <div class="card-img-container">
+                        <img th:src="${ann.imageNom != null} ? @{'/uploads/' + ${ann.imageNom}} : 'https://placehold.co/400x300?text=Sans+Image'" alt="Produit">
+
+                        <!-- 🔥 Badge Vendu -->
+                        <div th:if="${ann.estVendu}"
+                             style="position:absolute; top:10px; left:10px;
+                                    background:red; color:white;
+                                    padding:6px 12px; border-radius:10px;
+                                    font-weight:bold; z-index:2;">
+                            VENDU
+                        </div>
+
+                        <!-- 🔥 Overlay si vendu -->
+                        <div th:if="${ann.estVendu}"
+                             style="position:absolute; top:0; left:0;
+                                    width:100%; height:100%;
+                                    background:rgba(0,0,0,0.4);">
+                        </div>
+                    </div>
+
+                    <div class="p-3">
+                        <span class="badge bg-light text-primary mb-2" th:text="${ann.categorie}">Catégorie</span>
+                        <h6 class="fw-700 text-truncate" th:text="${ann.titre}">Titre</h6>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-800 text-primary" th:text="${ann.prix} + ' DH'">0 DH</span>
+
+                            <!-- Bouton selon état -->
+                            <a th:if="${!ann.estVendu}"
+                               th:href="@{'/annonce/' + ${ann.id}}"
+                               class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                               Voir
+                            </a>
+
+                            <span th:if="${ann.estVendu}" class="badge bg-danger px-3 py-2">
+                                Indisponible
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 text-center py-5" th:if="${annonces.isEmpty()}">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Aucune annonce disponible.</p>
+            </div>
+        </div>
+    </div>
+
+<footer>
+    <div class="container">
+        <div class="mb-4">
+            <a th:href="@{/}" class="text-white text-decoration-none me-3 small">Accueil</a>
+            <a th:href="@{/contact}" class="text-white text-decoration-none me-3 small">Contact & Support</a>
+            <a href="#" class="text-white text-decoration-none small">Conditions d'utilisation</a>
+        </div>
+        <div class="mb-3">
+            <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <p class="mb-0 opacity-75">&copy; 2026 AnnoncesPro. All rights reserved.</p>
+        <small class="opacity-50">Plateforme de modération gérée par Hajar.</small>
+    </div>
+</footer>
+
+</body>
+</html>
